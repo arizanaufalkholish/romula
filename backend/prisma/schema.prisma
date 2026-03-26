@@ -1,0 +1,289 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./romula.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ============ AUTH ============
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String
+  role      String   @default("user")
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  files         FileItem[]
+  tables        TableItem[]
+  people        PersonItem[]
+  sqlItems      SqlItem[]
+  codeSnippets  CodeSnippet[]
+  notes         NoteItem[]
+  newsItems     NewsItem[]
+  finance       FinanceRecord[]
+  tags          Tag[]
+  categories    Category[]
+  activities    ActivityLog[]
+  bookmarks     Bookmark[]
+}
+
+// ============ FILE ============
+model FileItem {
+  id         String   @id @default(cuid())
+  userId     String
+  name       String
+  originalName String
+  mimeType   String
+  size       Int
+  path       String
+  category   String   @default("")
+  isFavorite Boolean  @default(false)
+  isArchived Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fileTags FileTag[]
+}
+
+// ============ TABLE ============
+model TableItem {
+  id         String   @id @default(cuid())
+  userId     String
+  name       String
+  columns    String   // JSON array of column definitions
+  rows       String   @default("[]") // JSON array of row objects
+  category   String   @default("")
+  isFavorite Boolean  @default(false)
+  isArchived Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tableTags TableTag[]
+}
+
+// ============ PERSON ============
+model PersonItem {
+  id         String   @id @default(cuid())
+  userId     String
+  name       String
+  email      String   @default("")
+  phone      String   @default("")
+  org        String   @default("")
+  role       String   @default("")
+  notes      String   @default("")
+  category   String   @default("")
+  isFavorite Boolean  @default(false)
+  isArchived Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  personTags PersonTag[]
+}
+
+// ============ SQL ============
+model SqlItem {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  query       String
+  result      String   @default("")
+  description String   @default("")
+  category    String   @default("")
+  isFavorite  Boolean  @default(false)
+  isArchived  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sqlTags SqlTag[]
+}
+
+// ============ CODE SNIPPET ============
+model CodeSnippet {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  code        String
+  language    String   @default("javascript")
+  description String   @default("")
+  category    String   @default("")
+  isFavorite  Boolean  @default(false)
+  isArchived  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  codeTags CodeTag[]
+}
+
+// ============ NOTE ============
+model NoteItem {
+  id         String   @id @default(cuid())
+  userId     String
+  title      String
+  content    String   @default("")
+  summary    String   @default("")
+  category   String   @default("")
+  isFavorite Boolean  @default(false)
+  isArchived Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  noteTags NoteTag[]
+}
+
+// ============ NEWS ============
+model NewsItem {
+  id         String   @id @default(cuid())
+  userId     String
+  title      String
+  content    String   @default("")
+  source     String   @default("")
+  link       String   @default("")
+  category   String   @default("tech")
+  isRead     Boolean  @default(false)
+  isFavorite Boolean  @default(false)
+  isArchived Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  newsTags NewsTag[]
+}
+
+// ============ FINANCE ============
+model FinanceRecord {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String   // "income" or "expense"
+  description String
+  amount      Float
+  category    String   @default("other")
+  date        String   // YYYY-MM-DD
+  isFavorite  Boolean  @default(false)
+  isArchived  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ============ TAG ============
+model Tag {
+  id     String @id @default(cuid())
+  userId String
+  name   String
+  color  String @default("#3b82f6")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  fileTags   FileTag[]
+  tableTags  TableTag[]
+  personTags PersonTag[]
+  sqlTags    SqlTag[]
+  codeTags   CodeTag[]
+  noteTags   NoteTag[]
+  newsTags   NewsTag[]
+
+  @@unique([userId, name])
+}
+
+// ============ JOIN TABLES FOR TAGS ============
+model FileTag {
+  fileId String
+  tagId  String
+  file   FileItem @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  tag    Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  @@id([fileId, tagId])
+}
+model TableTag {
+  tableId String
+  tagId   String
+  table   TableItem @relation(fields: [tableId], references: [id], onDelete: Cascade)
+  tag     Tag       @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  @@id([tableId, tagId])
+}
+model PersonTag {
+  personId String
+  tagId    String
+  person   PersonItem @relation(fields: [personId], references: [id], onDelete: Cascade)
+  tag      Tag        @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  @@id([personId, tagId])
+}
+model SqlTag {
+  sqlId String
+  tagId String
+  sql   SqlItem @relation(fields: [sqlId], references: [id], onDelete: Cascade)
+  tag   Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  @@id([sqlId, tagId])
+}
+model CodeTag {
+  codeId String
+  tagId  String
+  code   CodeSnippet @relation(fields: [codeId], references: [id], onDelete: Cascade)
+  tag    Tag         @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  @@id([codeId, tagId])
+}
+model NoteTag {
+  noteId String
+  tagId  String
+  note   NoteItem @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  tag    Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  @@id([noteId, tagId])
+}
+model NewsTag {
+  newsId String
+  tagId  String
+  news   NewsItem @relation(fields: [newsId], references: [id], onDelete: Cascade)
+  tag    Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  @@id([newsId, tagId])
+}
+
+// ============ CATEGORY ============
+model Category {
+  id     String @id @default(cuid())
+  userId String
+  name   String
+  module String // "files", "notes", "code", "news", "finance", etc.
+  color  String @default("#3b82f6")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId, name, module])
+}
+
+// ============ ACTIVITY LOG ============
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String   // "create", "update", "delete"
+  module    String   // "files", "notes", etc.
+  targetId  String?
+  detail    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ============ BOOKMARK ============
+model Bookmark {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  url         String   @default("")
+  description String   @default("")
+  category    String   @default("")
+  isFavorite  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

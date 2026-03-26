@@ -1,0 +1,28 @@
+src/routes/auth.ts(27,23): error TS2769: No overload matches this call.
+  Overload 1 of 5, '(payload: string | object | Buffer<ArrayBufferLike>, secretOrPrivateKey: null, options?: (SignOptions & { algorithm: "none"; }) | undefined): string', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'null'.
+  Overload 2 of 5, '(payload: string | object | Buffer<ArrayBufferLike>, secretOrPrivateKey: Secret | Buffer<ArrayBufferLike> | JsonWebKeyInput | PrivateKeyInput, options?: SignOptions | undefined): string', gave the following error.
+    Type 'string' is not assignable to type 'number | StringValue | undefined'.
+  Overload 3 of 5, '(payload: string | object | Buffer<ArrayBufferLike>, secretOrPrivateKey: Secret | Buffer<ArrayBufferLike> | JsonWebKeyInput | PrivateKeyInput, callback: SignCallback): void', gave the following error.
+    Object literal may only specify known properties, and 'expiresIn' does not exist in type 'SignCallback'.
+src/routes/auth.ts(47,23): error TS2769: No overload matches this call.
+  Overload 1 of 5, '(payload: string | object | Buffer<ArrayBufferLike>, secretOrPrivateKey: null, options?: (SignOptions & { algorithm: "none"; }) | undefined): string', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'null'.
+  Overload 2 of 5, '(payload: string | object | Buffer<ArrayBufferLike>, secretOrPrivateKey: Secret | Buffer<ArrayBufferLike> | JsonWebKeyInput | PrivateKeyInput, options?: SignOptions | undefined): string', gave the following error.
+    Type 'string' is not assignable to type 'number | StringValue | undefined'.
+  Overload 3 of 5, '(payload: string | object | Buffer<ArrayBufferLike>, secretOrPrivateKey: Secret | Buffer<ArrayBufferLike> | JsonWebKeyInput | PrivateKeyInput, callback: SignCallback): void', gave the following error.
+    Object literal may only specify known properties, and 'expiresIn' does not exist in type 'SignCallback'.
+src/routes/crud.ts(100,124): error TS2345: Argument of type 'string | string[]' is not assignable to parameter of type 'string | undefined'.
+  Type 'string[]' is not assignable to type 'string'.
+src/routes/files.ts(62,61): error TS2322: Type 'string | string[]' is not assignable to type 'string | StringFilter<"FileItem"> | undefined'.
+  Type 'string[]' is not assignable to type 'string | StringFilter<"FileItem"> | undefined'.
+src/routes/files.ts(72,61): error TS2322: Type 'string | string[]' is not assignable to type 'string | StringFilter<"FileItem"> | undefined'.
+  Type 'string[]' is not assignable to type 'string | StringFilter<"FileItem"> | undefined'.
+src/routes/files.ts(76,45): error TS2322: Type 'string | string[]' is not assignable to type 'string | undefined'.
+  Type 'string[]' is not assignable to type 'string'.
+src/routes/files.ts(77,61): error TS2345: Argument of type 'string | string[]' is not assignable to parameter of type 'string | undefined'.
+  Type 'string[]' is not assignable to type 'string'.
+src/routes/files.ts(86,65): error TS2322: Type 'string | string[]' is not assignable to type 'string | StringFilter<"FileItem"> | undefined'.
+  Type 'string[]' is not assignable to type 'string | StringFilter<"FileItem"> | undefined'.
+src/routes/files.ts(88,58): error TS2322: Type 'string | string[]' is not assignable to type 'string | undefined'.
+  Type 'string[]' is not assignable to type 'string'.
